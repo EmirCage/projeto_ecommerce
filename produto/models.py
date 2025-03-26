@@ -4,6 +4,7 @@ import os
 from django.conf import settings
 from django.utils.text import slugify
 from django.contrib import admin
+from utils import utils
 
 
 class Produto(models.Model):
@@ -28,12 +29,12 @@ class Produto(models.Model):
 
     @admin.display(description="Preço")
     def get_preco_formatado(self):
-        return f'R$ {self.preco_marketing:.2f}'.replace('.', ',')
+        return utils.formata_preco(preco_marketing)
     get_preco_formatado.short_description = 'Preço'
 
     @admin.display(description="Preço Promo")
     def get_preco_promocional_formatado(self):
-        return f'R$ {self.preco_marketing_promocional:.2f}'.replace('.', ',')
+        return utils.formata_preco(preco_marketing_promocional)
     get_preco_promocional_formatado.short_description = 'Preço Promo'
 
     @staticmethod
