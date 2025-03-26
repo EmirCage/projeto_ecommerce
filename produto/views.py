@@ -37,6 +37,18 @@ class AdicionarAoCarrinho(View):
 
         variacao = get_object_or_404(models.Variacao, id=variacao_id)
 
+        if not self.request.session.get('carrinho'):
+            self.request.session['carrinho'] = {}
+            self.request.session.save()
+
+        carrinho = self.request.session['carrinho']
+
+        if variacao_id in carrinho:
+            ...
+        else:
+            ...
+
+
         return HttpResponse(f'{variacao.produto} {variacao.nome}')
 
 
