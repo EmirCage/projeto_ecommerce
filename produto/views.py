@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views import View
-# from django.http import HttpResponse
+from django.http import HttpResponse
 from django.contrib import messages
 from . import models
 
@@ -114,12 +114,40 @@ class AdicionarAoCarrinho(View):
 
 
 class RemoverDoCarrinho(View):
-    ...
+    def get(self, *args, **kwargs):      
+        http_referer = self.request.META.get(
+            'HTTP_REFERER', reverse('produto:lista')
+            )
+        variacao_id = self.request.GET.get('vid')
+
+        if not variacao_id:
+            return redirect(http_referer)
+
+        if not self.request.session.get('carrinho'):
+            return redirect(http_referer)
+
+        if variacao_id not in self.request.session['carrinho']:
+            return redirect(http_referer)
+
+        carrinho = self.request.session['carrinho'][variacao_id]
+
+        messages.sucess(
+            self.request,
+            f'Produto {carrinho["produto_nome"]} {carrinho['variacao_nome']}'
+            f'removido do seu carrinho.'
+        )
+
+        del self.request.session['carrinho'][variacao_id]
+        self.request.session.save()
+        return HttpResponse('Remover do carrinho.')
 
 
 class Carrinho(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'produto/carrinho,html')
+        contexto = {
+            'carrinho': self.request.session.get('carrinho', {})
+        }
+        return render(self.request, 'produto/carrinho,html', contexto)
 
 
 class Finalizar(View):
