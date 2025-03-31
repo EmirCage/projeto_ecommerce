@@ -11,6 +11,11 @@ from utils import utils
 
 
 class Pagar(View):
+    def get(self, *args, **kwargs):
+        return HttpResponse('PAGAR')
+
+
+class SalvarPedido(View):
     template_name = 'pedido/pagar.html'
 
     def get(self, *args, **kwargs):
@@ -91,10 +96,6 @@ class Pagar(View):
         del self.request.session['carrinho']
         # return render(self.request, self.template_name)
         return redirect('pedido:lista')
-
-
-class SalvarPedido(View):
-    ...
 
 
 class Detalhe(View):
